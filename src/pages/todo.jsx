@@ -18,6 +18,8 @@ function Todo() {
   const [taskStatus, setTaskStatus] = useState({});
   const [completedTitles, setCompletedTitles] = useState([]);
 
+  const apiUrl = import.meta.env.VITE_ENDPOINT_URL;
+
   // Function to handle the Edit button on Titles
   const handleTitleEdit = (titleId, title) => {
     setEditingTitle(titleId);
@@ -52,7 +54,7 @@ function Todo() {
 
   const getTitles = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_ENDPOINT_URL}/get-titles`);
+      const response = await axios.get(`${apiUrl}/get-titles`);
       setTitles(response.data.titles);
     } catch (error) {
       console.error("Error fetching titles:", error);
@@ -61,7 +63,7 @@ function Todo() {
 
   const getLists = async (titleId) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_ENDPOINT_URL}/get-lists/${titleId}`);
+      const response = await axios.get(`${apiUrl}/get-lists/${titleId}`);
       setLists(response.data.lists);
       const title = titles.find(t => t.id === titleId)?.title || "Task Details";
       setSelectedTitle(title);
@@ -109,7 +111,7 @@ function Todo() {
 
     // Mark each task as done in the backend
     for (const task of tasksToMarkAsDone) {
-      await axios.put(`${process.env.REACT_APP_ENDPOINT_URL}/mark-as-done/${task.id}`);
+      await axios.put(`${apiUrl}/mark-as-done/${task.id}`);
       setDoneTasks((prevDoneTasks) => [...prevDoneTasks, task]);
     }
 
@@ -129,7 +131,7 @@ function Todo() {
       setLists((prevLists) => [...prevLists, taskToMoveBack]);
 
       // Mark it as not done in the backend
-      await axios.put(`${process.env.REACT_APP_ENDPOINT_URL}/mark-as-undone/${taskId}`);
+      await axios.put(`${apiUrl}/mark-as-undone/${taskId}`);
       
       // Remove the title from the completedTitles array if there are still tasks left
       const updatedCompletedTitles = completedTitles.filter((completedTitleId) => completedTitleId !== titleId);
@@ -139,7 +141,7 @@ function Todo() {
 
   const updateTitle = async (titleId) => {
     try {
-      await axios.put(`${process.env.REACT_APP_ENDPOINT_URL}/update-title/${titleId}`, { title: newTitle });
+      await axios.put(`${apiUrl}/update-title/${titleId}`, { title: newTitle });
       setTitles(titles.map(t => (t.id === titleId ? { ...t, title: newTitle } : t)));
       setEditingTitle(null);
     } catch (error) {
@@ -149,7 +151,7 @@ function Todo() {
 
   const updateList = async (listId) => {
     try {
-      await axios.put(`${process.env.REACT_APP_ENDPOINT_URL}/update-list/${listId}`, { list_desc: newListDesc });
+      await axios.put(`${apiUrl}/update-list/${listId}`, { list_desc: newListDesc });
       setLists(lists.map(l => (l.id === listId ? { ...l, list_desc: newListDesc } : l)));
       setEditingList(null);
     } catch (error) {
@@ -159,7 +161,7 @@ function Todo() {
 
   const deleteTask = async (taskId) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_ENDPOINT_URL}/delete-task/${taskId}`);
+      await axios.delete(`${apiUrl}/delete-task/${taskId}`);
       setLists(lists.filter((task) => task.id !== taskId));
       setDoneTasks(doneTasks.filter((task) => task.id !== taskId));
     } catch (error) {
@@ -169,7 +171,7 @@ function Todo() {
 
   const deleteTitle = async (titleId) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_ENDPOINT_URL}/delete-title/${titleId}`);
+      await axios.delete(`${apiUrl}/delete-title/${titleId}`);
       setTitles(titles.filter((title) => title.id !== titleId));
       setCompletedTitles(completedTitles.filter((completedTitleId) => completedTitleId !== titleId));
     } catch (error) {

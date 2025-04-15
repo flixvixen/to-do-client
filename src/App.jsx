@@ -8,9 +8,11 @@ function Login() {
   const [password, setPassword] = useState('');
   const [showError, setShowError] = useState(false);
 
+  const apiUrl = import.meta.env.VITE_ENDPOINT_URL;
+
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_ENDPOINT_URL}/check-user`, { username, password });
+      const response = await axios.post(`${apiUrl}/check-user`, { username, password });
       if (response.data.exist) {
         setShowError(false);
         navigate("/todo"); 

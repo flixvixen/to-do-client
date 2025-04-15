@@ -6,6 +6,8 @@ export default function AddModal({ hide, onTaskAdded }) {
     const [tasks, setTasks] = useState(['']);
     const [message, setMessage] = useState('');
 
+    const apiUrl = import.meta.env.VITE_ENDPOINT_URL;
+
     const addTask = () => setTasks([...tasks, ""]);
     const removeTask = (index) => setTasks(tasks.filter((_, i) => i !== index));
 
@@ -24,7 +26,7 @@ export default function AddModal({ hide, onTaskAdded }) {
         }
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_ENDPOINT_URL}/add-to-do`, {
+            const response = await axios.post(`${apiUrl}/add-to-do`, {
                 username: loggedInUser,
                 title: title,
                 lists: tasks.filter(task => task.trim() !== ""), // ✅ Fixing key name & ensuring no empty tasks
